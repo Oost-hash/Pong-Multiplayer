@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pong - By Rob</title>
+    <link rel="stylesheet" type="text/css" href="public/css/pong.css">
+</head>
+<body>
+<input type="button" onclick="test()" value="click me">
+<canvas id="myCanvas">Your browser does not support canvas - try updating or downloading a newer browser</canvas>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script type="text/javascript">
+    var socket = io('/client');
+
+
+    function test() {
+        console.log("works");
+        socket.emit('playerY', {pos:1});
+    };
+
+
+
+</script>
+<script src="public/js/game.js"></script>
+</body>
+</html>
