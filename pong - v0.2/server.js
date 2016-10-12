@@ -3,7 +3,8 @@
  *
  * Uses Socket.io with Express
  *
- * Requirements
+ **************************************************
+ * REQUIREMENTS
  **************************************************/
 
 var util = require("util"),                 // Module for logging
@@ -64,7 +65,7 @@ function enterRoom(client){
     client.join('room1');
     var room = 'room1';
     var clients = nspClient.adapter.rooms['room1'].sockets;
-    util.log('Clients: ');
+    util.log('Clients in ' + room + ' : ');
     console.log(clients);
 
     play(room);
@@ -75,7 +76,7 @@ function play(room) {
 }
 
  nspClient.on('yCord', function (cord) {
-     console.log(cord);
+     util.log(cord);
  });
 
 init();
