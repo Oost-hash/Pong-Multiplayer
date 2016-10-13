@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pong - By Rob</title>
+    <link rel="stylesheet" type="text/css" href="public/css/pong.css">
+</head>
+<body>
+
+<canvas id="pongCanvas">Your browser does not support canvas - try updating or downloading a newer browser</canvas>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io('/client');
+</script>
+<script src="public/js/paddleV0.1.js"></script>
+<script src="public/js/ballV0.1.js"></script>
+<script src="public/js/gameV0.3.js"></script>
+<script>
+    socket.on('client connect', function (p1Name, p2Name, leftP1, leftP2) {
+        players.player1.name = p1Name;
+        players.player2.name = p2Name;
+        players.player1.left = leftP1;
+        players.player2.left = leftP2;
+    });
+
+    socket.on('player1', function () {
+            console.log('doet dit het wel?');
+            players.player1.left = false;
+        console.log(players.player1.left);
+    });
+
+    console.log(paddle.yP1);
+
+    socket.on('test', function (data) {
+        if(players.player1.left == false){
+            console.log(data);
+            paddle.yP1 = data;
+        }
+    });
+
+    socket.on('test2', function (data) {
+        if(players.player1.left == true){
+            console.log(data);
+            paddle.yP2 = data;
+        }
+    });
+
+    socket.on('test3', function (data) {
+        if(players.player1.left == false){
+            xPos  = data.xPos;
+            yPos = data.yPos;
+        }
+    });
+</script>
+</body>
+</html>
