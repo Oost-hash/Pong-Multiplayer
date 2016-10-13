@@ -10,7 +10,7 @@
 <canvas id="pongCanvas">Your browser does not support canvas - try updating or downloading a newer browser</canvas>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script>
-    var socket = io('/client');
+    var socket = io.connect('/client');
 </script>
 <script src="public/js/paddle.js"></script>
 <script src="public/js/gameV0.2.js"></script>
@@ -24,9 +24,33 @@
         players.player2.left = leftP2;
     });
 
+    socket.on('player1', function () {
+            console.log('doet dit het wel?');
+            players.player1.left = false;
+        console.log(players.player1.left);
+    });
+
+    console.log(paddle.yP1);
 
     socket.on('test', function (data) {
-        console.log(data);
+        if(players.player1.left == false){
+            console.log(data);
+            paddle.yP1 = data;
+        }
+    });
+
+    socket.on('test2', function (data) {
+        if(players.player1.left == true){
+            console.log(data);
+            paddle.yP2 = data;
+        }
+    });
+
+    socket.on('test3', function (data) {
+        if(players.player1.left == false){
+            xPos  = data.xPos;
+            yPos = data.yPos;
+        }
     });
 </script>
 </body>

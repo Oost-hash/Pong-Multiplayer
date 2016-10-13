@@ -1,5 +1,5 @@
 /**************************************************
- ** SERVER FILE
+ * SERVER FILE
  *
  * Uses Socket.io with Express
  *
@@ -53,31 +53,53 @@ function init() {
     });
 
     nspClient.on('connection', clientConnected);
+    nspClient.on('disconnect', clientDisconnect)
 }
 
+function clientDisconnect(client){
+    client.leave('room1');
+    util.log('Client disconnected: ' + client.id)
+}
 
 function clientConnected(client){
     util.log('Client joined ' + client.id);
     enterRoom(client);
-}
 
+    client.on('yCord', function (cord) {
+        client.broadcast.to('room1').emit('test', cord);
+        util.log(cord);
+    });
+
+    client.on('yCord2', function (cord) {
+        client.broadcast.to('room1').emit('test2', cord);
+        util.log(cord);
+    });
+
+    client.on('ball', function (data) {
+        client.broadcast.to('room1').emit('test3', data);
+    });
+}
+var count = 0;
 function enterRoom(client){
     client.join('room1');
     var room = 'room1';
     var clients = nspClient.adapter.rooms['room1'].sockets;
     util.log('Clients in ' + room + ' : ');
     console.log(clients);
-
+    if(count == 1) {
+        console.log('hij gaat de count in');
+        nspClient.to(client.id).emit('player1');
+        count = 0;
+    }
+    count++;
+    console.log('count is: ' + count);
     play(room);
 }
 
 function play(room) {
-    nspClient.in(room).emit('test', 'msg');
-}
+    // nspClient.in(room).emit('test', 'msg');
+};
 
- nspClient.on('yCord', function (cord) {
-     util.log(cord);
- });
 
 init();
 

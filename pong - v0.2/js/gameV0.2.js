@@ -4,14 +4,6 @@
 var canvas = document.getElementById('pongCanvas');
 var ctx = canvas.getContext('2d');
 
-//Start position ball
-var xPos = canvas.width/2;
-var yPos = canvas.height-30;
-
-
-var dx = rand(1, 3);
-var dy = 2;
-
 //size of the ball
 var ballSize = 2;
 
@@ -28,6 +20,16 @@ var players = {
             score: 0
         }
 }, scoreLimit = 5;
+
+//Start position ball
+var xPos = canvas.width/2;
+var yPos = canvas.height-30;
+
+if(players.player1.left){
+    var dx = rand(1, 3);
+    var dy = 2;
+}
+
 
 //Random start left or right
 function rand(min, max) {
@@ -84,28 +86,39 @@ function collision(){
 
     //Paddle collision and up/down movement;
     if(paddle.upP1 && paddle.yP1 < canvas.height-paddle.height) {
-        paddle.yP1 += paddle.speed;
-        socket.emit('yCord', paddle.yP1);
+        if(players.player1.left) {
+            paddle.yP1 += paddle.speed;
+            socket.emit('yCord', paddle.yP1);
+        }
     }
     else if(paddle.downP1 && paddle.yP1 > 0) {
-        paddle.yP1 -= paddle.speed;
+        if(players.player1.left) {
+            paddle.yP1 -= paddle.speed;
+            socket.emit('yCord', paddle.yP1);
+        }
     }
 
     if(paddle.upP2 && paddle.yP2 < canvas.height-paddle.height) {
-        paddle.yP2 += paddle.speed;
+        if(players.player1.left == false) {
+            paddle.yP2 += paddle.speed;
+            socket.emit('yCord2', paddle.yP2);
+        }
     }
     else if(paddle.downP2 && paddle.yP2 > 0) {
-        paddle.yP2 -= paddle.speed;
+        if(players.player1.left == false) {
+            paddle.yP2 -= paddle.speed;
+            socket.emit('yCord2', paddle.yP2);
+        }
     }
 
     if(players.player1.score == scoreLimit)
     {
-        alert('Player 1 won');
-        document.location.reload();
+        // alert('Player 1 won');
+        // document.location.reload();
     } else if ( players.player2.score == scoreLimit)
     {
-        alert('Player 2 won');
-        document.location.reload();
+        // alert('Player 2 won');
+        // document.location.reload();
     }
 }
 
@@ -139,8 +152,12 @@ function init() {
     drawPaddlePlayer2();
     collision();
 
-    xPos += dx;
-    yPos += dy;
+    //moves the ball
+    if(players.player1.left){
+        xPos += dx;
+        yPos += dy;
+        socket.emit('ball', {xPos: xPos, yPos: yPos});
+    }
 }
 
 setInterval(init, 30);
