@@ -80,6 +80,12 @@
     socket.on('start', function () {
         players.start = true;
     });
+    
+    socket.on('updateScore', function (data) {
+        console.log('score updated');
+        players.player1.score = data.scoreP1;
+        players.player2.score = data.scoreP2;
+    });
 </script>
 </body>
 </html>

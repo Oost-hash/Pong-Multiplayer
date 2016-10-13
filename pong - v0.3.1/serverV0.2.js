@@ -59,6 +59,10 @@ function clientConnected(client) {
     client.on('ball', function (data) {
         client.broadcast.to(data.room).emit('test3', data);
     });
+
+    client.on('score', function (data) {
+        client.broadcast.to(data.room).emit('updateScore', data);
+    });
 }
 
 function enterRoom(client) {
