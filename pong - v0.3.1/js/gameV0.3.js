@@ -7,11 +7,11 @@ var ctx = canvas.getContext('2d');
 var players = {
     room: '',
     start: false,
+    host: true,
     player1: {
         name: 'Player 1',
         id: 'noID',
-        score: 0,
-        left: true
+        score: 0
     },
     player2: {
         name: 'player 2',
@@ -31,7 +31,7 @@ function canvasCollision() {
             ball.dx = -ball.dx + 0.25;
         } else {
             players.player1.score++;
-            if(players.player1.left){
+            if(players.host){
                 socket.emit('score', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
             }
             ball.xPos = canvas.width / 2;
@@ -43,7 +43,7 @@ function canvasCollision() {
             ball.dx = -ball.dx - 0.25;
         } else {
             players.player2.score++;
-            if(players.player1.left){
+            if(players.host){
                 socket.emit('score', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
             }
             ball.xPos = canvas.width / 2;
@@ -102,7 +102,7 @@ function init() {
         paddleCollision();
         score();
         //moves the ball
-        if (players.player1.left) {
+        if (players.host) {
             ball.xPos += ball.dx;
             ball.yPos += ball.dy;
             socket.emit('ball', {room: players.room, xPos: ball.xPos, yPos: ball.yPos});

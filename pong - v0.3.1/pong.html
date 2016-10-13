@@ -52,26 +52,26 @@
 
     socket.on('player1', function () {
         console.log('doet dit het wel?');
-        players.player1.left = false;
-        console.log(players.player1.left);
+        players.host = false;
+        console.log(players.player1.host);
     });
 
     socket.on('test', function (data) {
-        if (players.player1.left == false) {
+        if (players.player1.host == false) {
             console.log(data);
             paddle.yP1 = data;
         }
     });
 
     socket.on('test2', function (data) {
-        if (players.player1.left == true) {
+        if (players.host == true) {
             console.log(data);
             paddle.yP2 = data;
         }
     });
 
     socket.on('test3', function (data) {
-        if (players.player1.left == false) {
+        if (players.host == false) {
             ball.xPos = data.xPos;
             ball.yPos = data.yPos;
         }

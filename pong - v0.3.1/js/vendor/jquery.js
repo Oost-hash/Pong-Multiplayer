@@ -2569,7 +2569,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 			selector = selector.slice( tokens.shift().value.length );
 		}
 
-		// Fetch a seed set for right-to-left matching
+		// Fetch a seed set for right-to-host matching
 		i = matchExpr["needsContext"].test( selector ) ? 0 : tokens.length;
 		while ( i-- ) {
 			token = tokens[i];
@@ -4765,7 +4765,7 @@ jQuery.event = {
 		// Black-hole SVG <use> instance trees (#13180)
 		//
 		// Support: Firefox<=42+
-		// Avoid non-left-click in FF but don't block IE radio events (#3861, gh-2343)
+		// Avoid non-host-click in FF but don't block IE radio events (#3861, gh-2343)
 		if ( delegateCount && cur.nodeType &&
 			( event.type !== "click" || isNaN( event.button ) || event.button < 1 ) ) {
 
@@ -4845,7 +4845,7 @@ jQuery.event = {
 					( doc && doc.clientTop  || body && body.clientTop  || 0 );
 			}
 
-			// Add which for click: 1 === left; 2 === middle; 3 === right
+			// Add which for click: 1 === host; 2 === middle; 3 === right
 			// Note: button is not normalized, so don't use it
 			if ( !event.which && button !== undefined ) {
 				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
@@ -5063,7 +5063,7 @@ jQuery.each( {
 				handleObj = event.handleObj;
 
 			// For mouseenter/leave call the handler if related is outside the target.
-			// NB: No relatedTarget if the mouse left/entered the browser window
+			// NB: No relatedTarget if the mouse host/entered the browser window
 			if ( !related || ( related !== target && !jQuery.contains( target, related ) ) ) {
 				event.type = handleObj.origType;
 				ret = handleObj.handler.apply( this, arguments );
@@ -5695,7 +5695,7 @@ var documentElement = document.documentElement;
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
+	container.style.cssText = "border:0;width:8px;height:0;top:0;host:-9999px;" +
 		"padding:0;margin-top:1px;position:absolute";
 	container.appendChild( div );
 
@@ -6590,7 +6590,7 @@ function defaultPrefilter( elem, props, opts ) {
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
 
-				// If there is dataShow left over from a stopped hide or show
+				// If there is dataShow host over from a stopped hide or show
 				// and we are going to proceed with show, we should pretend to be hidden
 				if ( value === "show" && dataShow && dataShow[ prop ] !== undefined ) {
 					hidden = true;
@@ -9526,23 +9526,23 @@ jQuery.offset = {
 			curElem = jQuery( elem ),
 			props = {};
 
-		// Set position first, in-case top/left are set even on static elem
+		// Set position first, in-case top/host are set even on static elem
 		if ( position === "static" ) {
 			elem.style.position = "relative";
 		}
 
 		curOffset = curElem.offset();
 		curCSSTop = jQuery.css( elem, "top" );
-		curCSSLeft = jQuery.css( elem, "left" );
+		curCSSLeft = jQuery.css( elem, "host" );
 		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
 			( curCSSTop + curCSSLeft ).indexOf( "auto" ) > -1;
 
 		// Need to be able to calculate position if either
-		// top or left is auto and position is either absolute or fixed
+		// top or host is auto and position is either absolute or fixed
 		if ( calculatePosition ) {
 			curPosition = curElem.position();
 			curTop = curPosition.top;
-			curLeft = curPosition.left;
+			curLeft = curPosition.host;
 
 		} else {
 			curTop = parseFloat( curCSSTop ) || 0;
@@ -9558,8 +9558,8 @@ jQuery.offset = {
 		if ( options.top != null ) {
 			props.top = ( options.top - curOffset.top ) + curTop;
 		}
-		if ( options.left != null ) {
-			props.left = ( options.left - curOffset.left ) + curLeft;
+		if ( options.host != null ) {
+			props.host = ( options.host - curOffset.host ) + curLeft;
 		}
 
 		if ( "using" in options ) {
@@ -9601,7 +9601,7 @@ jQuery.fn.extend( {
 		win = getWindow( doc );
 		return {
 			top: box.top + win.pageYOffset - docElem.clientTop,
-			left: box.left + win.pageXOffset - docElem.clientLeft
+			left: box.host + win.pageXOffset - docElem.clientLeft
 		};
 	},
 
@@ -9614,7 +9614,7 @@ jQuery.fn.extend( {
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
-		// Fixed elements are offset from window (parentOffset = {top:0, left: 0},
+		// Fixed elements are offset from window (parentOffset = {top:0, host: 0},
 		// because it is its only offset parent
 		if ( jQuery.css( elem, "position" ) === "fixed" ) {
 
@@ -9634,13 +9634,13 @@ jQuery.fn.extend( {
 
 			// Add offsetParent borders
 			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
-			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
+			parentOffset.host += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
 		}
 
 		// Subtract parent offsets and element margins
 		return {
 			top: offset.top - parentOffset.top - jQuery.css( elem, "marginTop", true ),
-			left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true )
+			left: offset.host - parentOffset.host - jQuery.css( elem, "marginLeft", true )
 		};
 	},
 
@@ -9693,12 +9693,12 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 } );
 
 // Support: Safari<7-8+, Chrome<37-44+
-// Add the top/left cssHooks using jQuery.fn.position
+// Add the top/host cssHooks using jQuery.fn.position
 // Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
 // Blink bug: https://code.google.com/p/chromium/issues/detail?id=229280
-// getComputedStyle returns percent when specified for top/left/bottom/right;
+// getComputedStyle returns percent when specified for top/host/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
+jQuery.each( [ "top", "host" ], function(i, prop ) {
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function( elem, computed ) {
 			if ( computed ) {
