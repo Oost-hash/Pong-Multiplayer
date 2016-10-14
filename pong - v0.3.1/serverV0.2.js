@@ -6,6 +6,7 @@
  **************************************************
  * REQUIREMENTS
  **************************************************/
+
 var util = require("util"),                                     // Module for logging
     express = require('express'),                               // Module for express framework
     http = require('http'),                                     // Module for http server
@@ -17,29 +18,22 @@ var gameCount = 0;                                              // Games played 
 /**************************************************
  ** SERVER SERTUP
  **************************************************/
+
 var app = express(),                                            // Create express instance
     server = http.createServer(app),                            // Create the http server from express
     io = socketio(server);                                      // Setup socket io to listen to the server
 
 var nspClient = io.of('/client');                               // Name space for connecting clients
-app.use('/public', express.static(__dirname + '/public'));     // Public folders
+app.use('/public', express.static(__dirname + '/public'));      // Public folders
 
-//Redirects to pong !!need to change it to start
 app.get('/', function (request, response) {
-    //noinspection JSUnresolvedFunction
-    response.sendFile(__dirname + '/pong.html');                // Index file on connect
+    response.sendFile(__dirname + '/pong.html');                // Game file (pong) on connect
 });
 
 /**************************************************
  ** Event Handlers
  **************************************************/
 
-function clientDisconnect(client) {
-    client.leave('room1');
-    util.log('Client disconnected: ' + client.id);
-}
-
-//test function
 function clientConnected(client) {
     util.log('Client joined ' + client.id);
 
@@ -47,52 +41,59 @@ function clientConnected(client) {
         enterRoom(client)
     });
 
-    //need to refractor and improve !!better names?
-    client.on('player1cord', function (data) {
-        client.broadcast.to(data.room).emit('p1y', data.yCord);
+    //Event handlers for paddle and ball, updates the cords
+    client.on('sendP1Y', function (data) {
+        client.broadcast.to(data.room).emit('updateP1Y', data.yCord);
     });
 
-    client.on('yCord2', function (data) {
-        client.broadcast.to(data.room).emit('test2', data.yCord);
+    client.on('sendP2Y', function (data) {
+        client.broadcast.to(data.room).emit('updateP2Y', data.yCord);
     });
 
-    client.on('ball', function (data) {
-        client.broadcast.to(data.room).emit('test3', data);
+    client.on('sendBall', function (data) {
+        client.broadcast.to(data.room).emit('updateBall', data);
     });
 
-    client.on('score', function (data) {
+    client.on('sendScore', function (data) {
         client.broadcast.to(data.room).emit('updateScore', data);
+    });
+
+    client.on('matchDone', function (data) {
+        client.to(data.room).emit('winner', data.name);
+    });
+
+    client.on('ping', function (data) {
+        console.log('ping');
+        client.broadcast.to(data).emit('pong');
+    });
+    
+    client.on('sendName', function (data) {
+        console.log('nickName received: ' + data.name);
+        client.to(data.room).emit('updatePlayerNames', data.name);
     });
 }
 
+// Function to create a game rooms, if a game is not available
 function enterRoom(client) {
     if (checkRooms(client) == false) {
         client.join('game' + gameCount);
-        console.log('Room is false');
-        var rooms = nspClient.adapter.rooms;
-        console.log(rooms);
         gameCount++;
     } else {
-        var game = gameCount -1;
+        var game = gameCount - 1;
         nspClient.in('game' + game).emit('start', 'game' + game);
-        nspClient.to(client.id).emit('player1');
+        nspClient.to(client.id).emit('hostFalse');
     }
 }
 
+// Function to checks if a game room is available
 function checkRooms(client) {
     for (var i = 0; i < gameCount; i++) {
         var rooms = nspClient.adapter.rooms['game' + i];
         if (rooms != null && rooms.length < 2) {
             client.join('game' + i);
-            console.log('Room is true');
-            var room = nspClient.adapter.rooms;
-            console.log(room);
             return true;
         }
     }
-
-    var room = nspClient.adapter.rooms;
-    console.log(room);
     return false;
 }
 
@@ -106,7 +107,9 @@ function init() {
     });
 
     nspClient.on('connection', clientConnected);
-    nspClient.on('disconnect', clientDisconnect)
+    nspClient.on('disconnect', function () {
+        console.log('does this even work?');
+    });
 }
 
 init();

@@ -9,8 +9,8 @@
 <div id="start">
     <div id="logo"><h1>Pong</h1></div>
     <div id="enterName">
-            <p><input id="nickName" type="text" placeholder="Enter your nickname" required></p>
-            <p><input onclick="play()" id="submit" type="button" value="Play">
+        <p><input id="nickName" type="text" placeholder="Enter your nickname" required></p>
+        <p><input onclick="play()" id="submit" type="button" value="Play">
     </div>
 </div>
 <div id="loading">
@@ -19,7 +19,13 @@
         <div class="loader"></div>
     </div>
 </div>
-<canvas id="pongCanvas">Your browser does not support canvas - try updating or downloading a newer browser</canvas>
+<canvas id="pongCanvas" style="width: 800px; height: 400px;">Your browser does not support canvas - try updating or
+    downloading a newer browser
+</canvas>
+<div id="names">
+    <div id="player1"></div>
+    <div id="player2"></div>
+</div>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script>
     var socket = io('/client');
@@ -32,60 +38,84 @@
     $('#pongCanvas').hide();
     $('#loading').hide();
 
-    function play(){
+    function play() {
         if ($('#nickName').val().length > 0) {
+            players.nickName = $('#nickName').val();
+            console.log('player nickName is: ' + players.nickName);
             socket.emit('play');
             $('#start').hide();
             $('#loading').show();
-        } else{
-            $("#nickName").css({ 'border-color': "red" });
+        } else {
+            $("#nickName").css({'border-color': "red"});
         }
     }
 
-    socket.on('start', function(data){
-        console.log('get start command');
+    socket.on('start', function (data) {
         $('#loading').hide();
         $('#pongCanvas').show();
         players.start = true;
         players.room = data;
+        socket.emit('sendName', {room: players.room, name: players.nickName});
     });
 
-    socket.on('player1', function () {
-        console.log('doet dit het wel?');
+    socket.on('updatePlayerNames', function (nickName) {
+        if (players.host) {
+            players.player1.name = players.nickName;
+            players.player2.name = nickName;
+        } else {
+            players.player1.name = nickName;
+            players.player2.name = players.nickName;
+        }
+        $('#player1').text(players.player1.name);
+        $('#player2').text(players.player2.name);
+
+    });
+
+    socket.on('hostFalse', function () {
         players.host = false;
-        console.log(players.player1.host);
     });
 
-    socket.on('test', function (data) {
-        if (players.player1.host == false) {
-            console.log(data);
+    socket.on('updateP1Y', function (data) {
+        if (players.host == false) {
             paddle.yP1 = data;
         }
     });
 
-    socket.on('test2', function (data) {
+    socket.on('updateP2Y', function (data) {
         if (players.host == true) {
-            console.log(data);
             paddle.yP2 = data;
         }
     });
 
-    socket.on('test3', function (data) {
+    socket.on('updateBall', function (data) {
         if (players.host == false) {
             ball.xPos = data.xPos;
             ball.yPos = data.yPos;
         }
     });
 
-    socket.on('start', function () {
-        players.start = true;
-    });
-    
     socket.on('updateScore', function (data) {
-        console.log('score updated');
-        players.player1.score = data.scoreP1;
-        players.player2.score = data.scoreP2;
+        if(players.host == false){
+            players.player1.score = data.scoreP2;
+            players.player2.score = data.scoreP1;
+        }
     });
+
+    socket.on('winner', function (data) {
+        console.log('The winner is: ' + data);
+    });
+
+    var startTime;
+
+    socket.on('pong', function () {
+        var latency = Date.now() - startTime;
+        console.log(latency);
+    });
+
+    setInterval(function () {
+        startTime = Date.now();
+        socket.emit('ping', players.room);
+    }, 10000);
 </script>
 </body>
 </html>

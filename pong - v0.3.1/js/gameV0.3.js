@@ -5,17 +5,16 @@ var canvas = document.getElementById('pongCanvas');
 var ctx = canvas.getContext('2d');
 
 var players = {
-    room: '',
+    room: 'game',
     start: false,
     host: true,
+    nickName: '',
     player1: {
         name: 'Player 1',
-        id: 'noID',
         score: 0
     },
     player2: {
-        name: 'player 2',
-        id: 'noID',
+        name: 'Player 2',
         score: 0
     }
 }, scoreLimit = 5;
@@ -32,7 +31,7 @@ function canvasCollision() {
         } else {
             players.player1.score++;
             if(players.host){
-                socket.emit('score', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
+                socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
             }
             ball.xPos = canvas.width / 2;
             ball.yPos = canvas.height - 30;
@@ -44,7 +43,7 @@ function canvasCollision() {
         } else {
             players.player2.score++;
             if(players.host){
-                socket.emit('score', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
+                socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
             }
             ball.xPos = canvas.width / 2;
             ball.yPos = canvas.height - 30;
@@ -58,16 +57,19 @@ function canvasCollision() {
     }
 }
 
+// Checks if there is a winner
 function score() {
+
     if (players.player1.score == scoreLimit) {
-        // alert('Player 1 won');
-        // document.location.reload();
+        socket.emit('matchDone', {room: players.room, name: players.player1.name});
+        players.start = false;
     } else if (players.player2.score == scoreLimit) {
-        // alert('Player 2 won');
-        // document.location.reload();
+        socket.emit('matchDone', {room: players.room, name: players.player2.name});
+        players.start = false;
     }
 }
 
+//draws score on canvas
 function drawScore() {
     ctx.font = "20pt Orbitron";
     ctx.fillStyle = "#FFF";
@@ -75,10 +77,10 @@ function drawScore() {
     ctx.fillText(players.player2.score.toString(), canvas.width / 2 + 25, 25);
 }
 
+//Draws the mid line
 function drawLine() {
     ctx.beginPath();
     ctx.strokeStyle = '#FFF';
-    //noinspection JSUnresolvedFunction
     ctx.setLineDash([10]);
     ctx.moveTo(canvas.width / 2, 0);
     ctx.lineTo(canvas.height, canvas.height);
@@ -105,9 +107,11 @@ function init() {
         if (players.host) {
             ball.xPos += ball.dx;
             ball.yPos += ball.dy;
-            socket.emit('ball', {room: players.room, xPos: ball.xPos, yPos: ball.yPos});
+            socket.emit('sendBall', {room: players.room, xPos: ball.xPos, yPos: ball.yPos});
         }
     }
 }
 
+
 setInterval(init, 30);
+

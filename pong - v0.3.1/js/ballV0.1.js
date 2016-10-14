@@ -18,7 +18,7 @@ var ball = {
     color: '#FFF'
 };
 
-//Random start host or right
+//Random start left or right
 function rand(min, max) {
     var offset = min;
     var range = (max - min);

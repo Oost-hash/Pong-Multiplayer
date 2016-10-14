@@ -24,7 +24,7 @@ var paddle = {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-//Key down, handler
+//Key down handler
 function keyDownHandler(e) {
     if (e.keyCode == 83) {
         if (players.host == true) {
@@ -82,26 +82,25 @@ function paddleCollision() {
     if (paddle.upP1 && paddle.yP1 < canvas.height - paddle.height) {
         if (players.host) {
             paddle.yP1 += paddle.speed;
-            socket.emit('player1cord', {room: players.room, yCord: paddle.yP1});
+            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1});
         }
     }
     else if (paddle.downP1 && paddle.yP1 > 0) {
         if (players.host) {
             paddle.yP1 -= paddle.speed;
-            socket.emit('player1cord', {room: players.room, yCord: paddle.yP1});
+            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1});
         }
     }
-
     if (paddle.upP2 && paddle.yP2 < canvas.height - paddle.height) {
         if (players.host == false) {
             paddle.yP2 += paddle.speed;
-            socket.emit('yCord2', {room: players.room, yCord: paddle.yP2});
+            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2});
         }
     }
     else if (paddle.downP2 && paddle.yP2 > 0) {
         if (players.host == false) {
             paddle.yP2 -= paddle.speed;
-            socket.emit('yCord2', {room: players.room, yCord: paddle.yP2});
+            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2});
         }
     }
 }
