@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+}
+
+body, html {
+    background-color: #000;
+}
+
+canvas, #start, #loading, #names {
+    background: #000;
+    display: block;
+    margin: 30px auto 0;
+    border: 5px solid #FFF;
+    color: #FFF;
+}
+
+#names {
+    width: 800px;
+    height: 100px;
+}
+
+#names > div {
+    font-size: 24pt;
+    color: #FFFFFF;
+}
+
+#player1 {
+    float: left;
+    margin-left: 10px;
+}
+
+#player2 {
+    float: right;
+    margin-right: 10px;
+}
+
+#start, #loading {
+    width: 800px;
+    height: 400px;
+}
+
+#logo {
+    color: #FFF;
+    font-size: 20pt;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#enterName {
+    margin-top: 5px;
+    margin-left: 300px;
+}
+
+input {
+    background-color: #000000;
+    color: #FFF;
+    border: 2px solid #FFF;
+    padding: 0;
+    margin: 0;
+}
+
+input[type=button] {
+    width: 210px;
+    padding: 5px;
+    margin-top: 10px;
+    font-size: 12pt;
+}
+
+input[type=text] {
+    width: 196px;
+    padding: 5px;
+}
+
+input:hover {
+    border-color: #33ff66;
+}
+
+.loader {
+    border: 8px solid #000;
+    border-radius: 50%;
+    border-top: 8px solid #FFFFFF;
+    border-bottom: 8px solid #FFFFFF;
+    width: 30px;
+    height: 30px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    margin-left: 80px;
+    margin-top: 20px;
+}
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.center {
+    margin-top: 150px;
+    margin-left: 35%;
+}
