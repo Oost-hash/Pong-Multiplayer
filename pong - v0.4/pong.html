@@ -99,8 +99,8 @@
 
     socket.on('updateScore', function (data) {
         if(players.host == false){
-            players.player1.score = data.scoreP2;
-            players.player2.score = data.scoreP1;
+            players.player1.score = data.scoreP1;
+            players.player2.score = data.scoreP2;
         }
     });
 

@@ -32,7 +32,7 @@ function canvasCollision() {
             ball.dx = -ball.dx + 0.25;
         } else {
             if(players.host){
-                players.player1.score++;
+                players.player2.score++;
                 socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
                 ball.xPos = canvas.width / 2;
                 ball.yPos = canvas.height - 30;
@@ -44,7 +44,7 @@ function canvasCollision() {
             ball.dx = -ball.dx - 0.25;
         } else {
             if(players.host){
-                players.player2.score++;
+                players.player1.score++;
                 socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
                 ball.xPos = canvas.width / 2;
                 ball.yPos = canvas.height - 30;

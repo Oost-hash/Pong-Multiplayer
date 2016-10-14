@@ -55,7 +55,8 @@ function clientConnected(client) {
     });
 
     client.on('sendScore', function (data) {
-        client.broadcast.to(data.room).emit('updateScore', data);
+        client.broadcast.to(data.room).emit('updateScore', { scoreP1: data.scoreP1, scoreP2: data.scoreP2});
+        console.log('p1 score: ' + data.scoreP1 + "p2 score: " + data.scoreP2);
     });
 
     client.on('matchDone', function (data) {
