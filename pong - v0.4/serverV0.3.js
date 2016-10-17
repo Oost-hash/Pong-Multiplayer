@@ -14,6 +14,7 @@ var util = require("util"),                                     // Module for lo
 
 var port = 3000;                                                // Default Port
 var gameCount = 0;                                              // Games played and for creation of rooms
+var waitingGames = [];
 
 /**************************************************
  ** SERVER SERTUP
@@ -43,11 +44,19 @@ function clientConnected(client) {
 
     //Event handlers for paddle and ball, updates the cords
     client.on('sendP1Y', function (data) {
-        client.broadcast.to(data.room).emit('updateP1Y', data.yCord);
+        if(nspClient.connected[data.id]){
+            client.broadcast.to(data.room).emit('updateP1Y', data.yCord);
+        } else {
+            console.log('player 2 dis');
+        }
     });
 
     client.on('sendP2Y', function (data) {
-        client.broadcast.to(data.room).emit('updateP2Y', data.yCord);
+        if(nspClient.connected[data.id]){
+            client.broadcast.to(data.room).emit('updateP2Y', data.yCord);
+        } else {
+            console.log('player 1 dis');
+        }
     });
 
     client.on('sendBall', function (data) {
@@ -56,7 +65,6 @@ function clientConnected(client) {
 
     client.on('sendScore', function (data) {
         client.broadcast.to(data.room).emit('updateScore', { scoreP1: data.scoreP1, scoreP2: data.scoreP2});
-        console.log('p1 score: ' + data.scoreP1 + "p2 score: " + data.scoreP2);
     });
 
     client.on('matchDone', function (data) {
@@ -64,7 +72,6 @@ function clientConnected(client) {
     });
 
     client.on('sendName', function (data) {
-        console.log('nickName received: ' + data.name);
         client.to(data.room).emit('updatePlayers', {name: data.name, id: client.id});
     });
 }
@@ -73,6 +80,7 @@ function clientConnected(client) {
 function enterRoom(client) {
     if (checkRooms(client) == false) {
         client.join('game' + gameCount);
+        waitingGames.push({game: 'game' + gameCount, open: true});
         gameCount++;
     } else {
         var game = gameCount - 1;
@@ -83,10 +91,10 @@ function enterRoom(client) {
 
 // Function to checks if a game room is available
 function checkRooms(client) {
-    for (var i = 0; i < gameCount; i++) {
-        var rooms = nspClient.adapter.rooms['game' + i];
-        if (rooms != null && rooms.length < 2) {
-            client.join('game' + i);
+    for (var i = 0; i < waitingGames.length; i++) {
+        if (waitingGames[i].open) {
+            client.join(waitingGames[i].game);
+            waitingGames.shift();
             return true;
         }
     }

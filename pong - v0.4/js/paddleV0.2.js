@@ -82,25 +82,25 @@ function paddleCollision() {
     if (paddle.upP1 && paddle.yP1 < canvas.height - paddle.height) {
         if (players.host) {
             paddle.yP1 += paddle.speed;
-            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1});
+            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1, id: players.player2.id});
         }
     }
     else if (paddle.downP1 && paddle.yP1 > 0) {
         if (players.host) {
             paddle.yP1 -= paddle.speed;
-            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1});
+            socket.emit('sendP1Y', {room: players.room, yCord: paddle.yP1, id: players.player2.id});
         }
     }
     if (paddle.upP2 && paddle.yP2 < canvas.height - paddle.height) {
         if (players.host == false) {
             paddle.yP2 += paddle.speed;
-            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2});
+            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2, id: players.player1.id});
         }
     }
     else if (paddle.downP2 && paddle.yP2 > 0) {
         if (players.host == false) {
             paddle.yP2 -= paddle.speed;
-            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2});
+            socket.emit('sendP2Y', {room: players.room, yCord: paddle.yP2, id: players.player1.id});
         }
     }
 }
