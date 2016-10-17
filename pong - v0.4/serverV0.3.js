@@ -82,10 +82,6 @@ function enterRoom(client) {
         client.join('game' + gameCount);
         waitingGames.push({game: 'game' + gameCount, open: true});
         gameCount++;
-    } else {
-        var game = gameCount - 1;
-        nspClient.in('game' + game).emit('start', 'game' + game);
-        nspClient.to(client.id).emit('hostFalse');
     }
 }
 
@@ -93,7 +89,10 @@ function enterRoom(client) {
 function checkRooms(client) {
     for (var i = 0; i < waitingGames.length; i++) {
         if (waitingGames[i].open) {
+            waitingGames[i].open = false;
             client.join(waitingGames[i].game);
+            nspClient.in(waitingGames[i].game).emit('start', waitingGames[i].game);
+            nspClient.to(client.id).emit('hostFalse');
             waitingGames.shift();
             return true;
         }
@@ -107,13 +106,10 @@ function checkRooms(client) {
 
 function init() {
     server.listen(port, function () {
-        util.log('Server Started listing on port: 3000')
+        util.log('Server Started listing on port: ' + port)
     });
 
     nspClient.on('connection', clientConnected);
-    nspClient.on('disconnect', function () {
-        console.log('does this even work?');
-    });
 }
 
 init();
