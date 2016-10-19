@@ -4,14 +4,17 @@
     <meta charset="utf-8"/>
     <title>Pong - By Rob</title>
     <link rel="stylesheet" type="text/css" href="public/css/pong.css">
+    <link rel="stylesheet" type="text/css" href="public/js/vendor/palette-color-picker/palette-color-picker.css">
 </head>
 <body>
 <div id="start">
     <div id="logo"><h1>Pong</h1></div>
     <div id="enterName">
         <p><input id="nickName" type="text" placeholder="Enter your nickname" required></p>
+        <p style="margin-top: 10px;"><span style="vertical-align: top;">Paddle Color : </span> <input type="text" name="colorPicker" value="ffffff" style="display: none;"></p>
         <p><input onclick="play()" id="submit" type="button" value="Play">
     </div>
+
 </div>
 <div id="loading">
     <div class="center">
@@ -19,12 +22,20 @@
         <div class="loader"></div>
     </div>
 </div>
+<div id="winner">
+    <div>
+        <h1 id="name">Test</h1>
+        <p id="reason">You won with 5-0</p>
+        <input type="button" value="Play again?" onclick="playAgain()">
+    </div>
+</div>
 <canvas id="pongCanvas" style="width: 800px; height: 400px;">Your browser does not support canvas - try updating or
-    downloading a newer browser
+    downloading a newer browser.
 </canvas>
 <div id="names">
-    <div id="player1"></div>
-    <div id="player2"></div>
+    <div id="player1">Host</div>
+    <div id="score"><span id="scoreP1">0</span> : <span id="scoreP2">1</span></div>
+    <div id="player2">Client</div>
 </div>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script>
@@ -34,78 +45,29 @@
 <script src="public/js/ballV0.1.js"></script>
 <script src="public/js/gameV0.3.1.js"></script>
 <script src="public/js/vendor/jquery.js"></script>
+<script src="public/js/client.js"></script>
+<script src="public/js/vendor/palette-color-picker/palette-color-picker.js"></script>
 <script>
-    $('#pongCanvas').hide();
-    $('#loading').hide();
-
-    function play() {
-        if ($('#nickName').val().length > 0) {
-            players.nickName = $('#nickName').val();
-            console.log('player nickName is: ' + players.nickName);
-            socket.emit('play');
-            $('#start').hide();
-            $('#loading').show();
-        } else {
-            $("#nickName").css({'border-color': "red"});
-        }
-    }
-
-    socket.on('start', function (data) {
-        $('#loading').hide();
-        $('#pongCanvas').show();
-        players.start = true;
-        players.room = data;
-        socket.emit('sendName', {room: players.room, name: players.nickName});
-    });
-
-    socket.on('updatePlayers', function (data) {
-        if (players.host) {
-            players.player1.name = players.nickName;
-            players.player2.name = data.name;
-            players.player2.id = data.id;
-            console.log('player 2 id: ' + data.id);
-        } else {
-            players.player1.name = data.name;
-            players.player2.name = players.nickName;
-            players.player1.id = data.id;
-            console.log('player 1 id: ' + data.id);
-        }
-        $('#player1').text(players.player1.name);
-        $('#player2').text(players.player2.name);
-    });
-
-    socket.on('hostFalse', function () {
-        players.host = false;
-    });
-
-    socket.on('updateP1Y', function (data) {
-        if (players.host == false) {
-            paddle.yP1 = data;
-        }
-    });
-
-    socket.on('updateP2Y', function (data) {
-        if (players.host == true) {
-            paddle.yP2 = data;
-        }
-    });
-
-    socket.on('updateBall', function (data) {
-        if (players.host == false) {
-            ball.xPos = data.xPos;
-            ball.yPos = data.yPos;
-        }
-    });
-
-    socket.on('updateScore', function (data) {
-        if(players.host == false){
-            players.player1.score = data.scoreP1;
-            players.player2.score = data.scoreP2;
-        }
-    });
-
-    socket.on('winner', function (data) {
-        console.log('The winner is: ' + data);
+    $(document).ready(function () {
+        $('[name="colorPicker"]').paletteColorPicker({
+            colors: [
+                {"ffffff": "#ffffff"},
+                {"7bd148": "#7bd148"},
+                {"5484ed": "#5484ed"},
+                {"a4bdfc": "#a4bdfc"},
+                {"46d6db": "#46d6db"},
+                {"7ae7bf": "#7ae7bf"},
+                {"51b749": "#51b749"},
+                {"fbd75b": "#fbd75b"},
+                {"ffb878": "#ffb878"},
+                {"ff887c": "#ff887c"},
+                {"dc2127": "#dc2127"},
+                {"dbadff": "#dbadff"},
+                {"ff8300": "#ff8300"}
+            ],
+            position: 'downside', // default -> 'upside'
+            clear_btn: null
+        });
     });
 </script>
 </body>

@@ -10,12 +10,22 @@ body, html {
     background-color: #000;
 }
 
-canvas, #start, #loading, #names {
+canvas, #start, #loading, #names, #winner {
     background: #000;
     display: block;
     margin: 30px auto 0;
     border: 5px solid #FFF;
     color: #FFF;
+    width: 800px;
+    height: 400px;
+}
+
+#winner {
+    text-align: center;
+}
+
+#winner > div {
+    margin-top: 150px;
 }
 
 #names {
@@ -30,17 +40,18 @@ canvas, #start, #loading, #names {
 
 #player1 {
     float: left;
-    margin-left: 10px;
+    padding: 30px;
 }
 
 #player2 {
     float: right;
-    margin-right: 10px;
+    padding: 30px;
 }
 
-#start, #loading {
-    width: 800px;
-    height: 400px;
+#score{
+    float: left;
+    padding: 30px;
+    margin-left: 200px;
 }
 
 #logo {

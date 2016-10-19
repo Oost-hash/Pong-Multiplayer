@@ -9,15 +9,18 @@ var players = {
     start: false,
     host: true,
     nickName: '',
+    paddleColor: 'ffffff',
     player1: {
         name: 'Player 1',
         id: 'noID',
-        score: 0
+        score: 0,
+        paddleColor: ''
     },
     player2: {
         name: 'Player 2',
         id: 'noID',
-        score: 0
+        score: 0,
+        paddleColor: ''
     }
 }, scoreLimit = 5;
 
@@ -31,9 +34,13 @@ function canvasCollision() {
         if (ball.yPos < paddle.yP1 + paddle.height && ball.yPos > paddle.yP1) {
             ball.dx = -ball.dx + 0.25;
         } else {
-            if(players.host){
+            if (players.host) {
                 players.player2.score++;
-                socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
+                socket.emit('sendScore', {
+                    room: players.room,
+                    scoreP1: players.player1.score,
+                    scoreP2: players.player2.score
+                });
                 ball.xPos = canvas.width / 2;
                 ball.yPos = canvas.height - 30;
                 ball.dx = -2;
@@ -43,9 +50,13 @@ function canvasCollision() {
         if (ball.yPos < paddle.yP2 + paddle.height && ball.yPos > paddle.yP2) {
             ball.dx = -ball.dx - 0.25;
         } else {
-            if(players.host){
+            if (players.host) {
                 players.player1.score++;
-                socket.emit('sendScore', { room: players.room, scoreP1: players.player1.score, scoreP2: players.player2.score});
+                socket.emit('sendScore', {
+                    room: players.room,
+                    scoreP1: players.player1.score,
+                    scoreP2: players.player2.score
+                });
                 ball.xPos = canvas.width / 2;
                 ball.yPos = canvas.height - 30;
                 ball.dx = 2;
@@ -55,7 +66,7 @@ function canvasCollision() {
 
     //Collision top and down;
     if (ball.yPos + ball.dy > canvas.height - ball.size || ball.yPos + ball.dy < ball.size) {
-        ball.dy =- ball.dy;
+        ball.dy = -ball.dy;
     }
 }
 
@@ -72,11 +83,9 @@ function score() {
 }
 
 //draws score on canvas
-function drawScore() {
-    ctx.font = "20pt Orbitron";
-    ctx.fillStyle = "#FFF";
-    ctx.fillText(players.player1.score.toString(), canvas.width / 2 - 50, 25);
-    ctx.fillText(players.player2.score.toString(), canvas.width / 2 + 25, 25);
+function updateScore() {
+    $('#scoreP1').text(players.player1.score);
+    $('#scoreP2').text(players.player2.score);
 }
 
 //Draws the mid line
@@ -96,7 +105,7 @@ function drawLine() {
 function init() {
     //Clears ball for new position
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawScore();
+    updateScore();
     drawLine();
     if (players.start) {
         drawBall();
@@ -114,6 +123,4 @@ function init() {
     }
 }
 
-
 setInterval(init, 30);
-

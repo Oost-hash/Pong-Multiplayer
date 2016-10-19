@@ -65,7 +65,7 @@ function keyUpHandler(e) {
 function drawPaddlePlayer1() {
     ctx.beginPath();
     ctx.rect((canvas.width - canvas.width), paddle.yP1, paddle.width, paddle.height);
-    ctx.fillStyle = paddle.color;
+    ctx.fillStyle = '#' + players.player1.paddleColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -73,7 +73,7 @@ function drawPaddlePlayer1() {
 function drawPaddlePlayer2() {
     ctx.beginPath();
     ctx.rect(canvas.width - paddle.width, paddle.yP2, paddle.width, paddle.height);
-    ctx.fillStyle = paddle.color;
+    ctx.fillStyle = '#' + players.player2.paddleColor;
     ctx.fill();
     ctx.closePath();
 }

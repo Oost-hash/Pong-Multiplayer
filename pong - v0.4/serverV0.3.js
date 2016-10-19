@@ -47,7 +47,7 @@ function clientConnected(client) {
         if(nspClient.connected[data.id]){
             client.broadcast.to(data.room).emit('updateP1Y', data.yCord);
         } else {
-            console.log('player 2 dis');
+            nspClient.to(data.room).emit('disconnect');
         }
     });
 
@@ -55,7 +55,7 @@ function clientConnected(client) {
         if(nspClient.connected[data.id]){
             client.broadcast.to(data.room).emit('updateP2Y', data.yCord);
         } else {
-            console.log('player 1 dis');
+            nspClient.to(data.room).emit('disconnect');
         }
     });
 
@@ -71,12 +71,12 @@ function clientConnected(client) {
         client.to(data.room).emit('winner', data.name);
     });
 
-    client.on('sendName', function (data) {
-        client.to(data.room).emit('updatePlayers', {name: data.name, id: client.id});
+    client.on('sendPlayerInfo', function (data) {
+        client.to(data.room).emit('updatePlayers', {name: data.name, paddleColor: data.paddleColor, id: client.id});
     });
 }
 
-// Function to create a game rooms, if a game is not available
+// Function to create a game room, if a game is not available
 function enterRoom(client) {
     if (checkRooms(client) == false) {
         client.join('game' + gameCount);
