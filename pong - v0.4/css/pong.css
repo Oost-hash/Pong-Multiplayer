@@ -10,7 +10,7 @@ body, html {
     background-color: #000;
 }
 
-canvas, #start, #loading, #names, #winner {
+canvas, #start, #loading, #scoreboard, #winner, #help {
     background: #000;
     display: block;
     margin: 30px auto 0;
@@ -28,12 +28,12 @@ canvas, #start, #loading, #names, #winner {
     margin-top: 150px;
 }
 
-#names {
+#scoreboard {
     width: 800px;
     height: 100px;
 }
 
-#names > div {
+#scoreboard > div {
     font-size: 24pt;
     color: #FFFFFF;
 }
@@ -64,6 +64,16 @@ canvas, #start, #loading, #names, #winner {
 #enterName {
     margin-top: 5px;
     margin-left: 300px;
+}
+
+#help {
+    text-align: center;
+}
+
+#help-button {
+    width: 30px;
+    padding: 0;
+    margin-left: 10px;
 }
 
 input {

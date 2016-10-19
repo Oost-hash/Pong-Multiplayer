@@ -14,7 +14,7 @@ var util = require("util"),                                     // Module for lo
 
 var port = 3000;                                                // Default Port
 var gameCount = 0;                                              // Games played and for creation of rooms
-var waitingGames = [];
+var waitingGames = [];                                          // Array for waitingGames to connect to
 
 /**************************************************
  ** SERVER SERTUP
@@ -35,14 +35,18 @@ app.get('/', function (request, response) {
  ** Event Handlers
  **************************************************/
 
+//If client connects
 function clientConnected(client) {
+    //Logs for the server side
     util.log('Client joined ' + client.id);
+    util.log('Players online: ' + io.engine.clientsCount);
 
+    // If play button is pressed clients enter a room
     client.on('play', function () {
         enterRoom(client)
     });
 
-    //Event handlers for paddle and ball, updates the cords
+    // Sends paddle coordinates to client(player 2) and checks if client still connected.
     client.on('sendP1Y', function (data) {
         if(nspClient.connected[data.id]){
             client.broadcast.to(data.room).emit('updateP1Y', data.yCord);
@@ -51,6 +55,7 @@ function clientConnected(client) {
         }
     });
 
+    // Sends paddle coordinates to host(player 1) and checks if host is still connected.
     client.on('sendP2Y', function (data) {
         if(nspClient.connected[data.id]){
             client.broadcast.to(data.room).emit('updateP2Y', data.yCord);
@@ -59,22 +64,30 @@ function clientConnected(client) {
         }
     });
 
+    //Sends ball coordinates to client(player 2)
     client.on('sendBall', function (data) {
         client.broadcast.to(data.room).emit('updateBall', data);
     });
 
+    //Sends score to client(player 2)
     client.on('sendScore', function (data) {
         client.broadcast.to(data.room).emit('updateScore', { scoreP1: data.scoreP1, scoreP2: data.scoreP2});
     });
 
+    //Sends the winner to clients
     client.on('matchDone', function (data) {
         client.to(data.room).emit('winner', data.name);
     });
 
+    //Sends player name and paddle color to client
     client.on('sendPlayerInfo', function (data) {
         client.to(data.room).emit('updatePlayers', {name: data.name, paddleColor: data.paddleColor, id: client.id});
     });
 }
+
+/**************************************************
+ ** Server functions
+ **************************************************/
 
 // Function to create a game room, if a game is not available
 function enterRoom(client) {

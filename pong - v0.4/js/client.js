@@ -2,10 +2,12 @@
  ** Functions Client
  **************************************************/
 
-//Hides the correct div
+//Hides the correct divs
+$('#help').hide();
 $('#pongCanvas').hide();
 $('#loading').hide();
 $('#winner').hide();
+$('#scoreboard').hide();
 
 // When play button is pressed on start screen, send nickName to server and start searching for other player.
 function play() {
@@ -24,6 +26,7 @@ function play() {
 // start a new game
 function playAgain() {
     $('#winner').hide();
+    $('#scoreboard').hide();
     $('#start').show();
     players.start = false;
     resetValues();
@@ -64,6 +67,17 @@ function resetValues() {
     ball.dy = 2;
 }
 
+//show and hide help
+function showHelp(){
+    $('#start').hide();
+    $('#help').show();
+}
+
+function hideHelp(){
+    $('#start').show();
+    $('#help').hide();
+}
+
 /**************************************************
  ** Event Handlers - Client
  **************************************************/
@@ -72,6 +86,7 @@ function resetValues() {
 socket.on('start', function (data) {
     $('#loading').hide();
     $('#pongCanvas').show();
+    $('#scoreboard').show();
     players.room = data;
     players.start = true;
     socket.emit('sendPlayerInfo', {room: players.room, name: players.nickName, paddleColor: players.paddleColor});

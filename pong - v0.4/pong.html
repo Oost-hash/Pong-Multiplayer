@@ -7,21 +7,34 @@
     <link rel="stylesheet" type="text/css" href="public/js/vendor/palette-color-picker/palette-color-picker.css">
 </head>
 <body>
+<!-- Start screen -->
 <div id="start">
+    <div><input onclick="showHelp()" id="help-button" type="button" value="?"></div>
     <div id="logo"><h1>Pong</h1></div>
     <div id="enterName">
         <p><input id="nickName" type="text" placeholder="Enter your nickname" required></p>
         <p style="margin-top: 10px;"><span style="vertical-align: top;">Paddle Color : </span> <input type="text" name="colorPicker" value="ffffff" style="display: none;"></p>
-        <p><input onclick="play()" id="submit" type="button" value="Play">
+        <p><input onclick="play()" id="submit" type="button" value="Play"></p>
     </div>
-
 </div>
+<!-- End start screen -->
+<!-- Help and credits screen -->
+<div id="help">
+    <div>
+        <p>Help text</p>
+        <input type="button" value="Back" onclick="hideHelp()">
+    </div>
+</div>
+<!-- End help and credits -->
+<!-- Loading screen-->
 <div id="loading">
     <div class="center">
         <p>Searching for other player</p>
         <div class="loader"></div>
     </div>
 </div>
+<!-- End loading screen -->
+<!-- Winner screen -->
 <div id="winner">
     <div>
         <h1 id="name">Test</h1>
@@ -29,25 +42,41 @@
         <input type="button" value="Play again?" onclick="playAgain()">
     </div>
 </div>
+<!-- End winner screen -->
+<!-- Canvas and Scoreboard -->
 <canvas id="pongCanvas" style="width: 800px; height: 400px;">Your browser does not support canvas - try updating or
     downloading a newer browser.
 </canvas>
-<div id="names">
+<div id="scoreboard">
     <div id="player1">Host</div>
     <div id="score"><span id="scoreP1">0</span> : <span id="scoreP2">1</span></div>
     <div id="player2">Client</div>
 </div>
+<!-- End Canvas and Scoreboard -->
+
+<!-- Socket IO dependencies-->
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script>
+    //Initialize socket io
     var socket = io('/client');
 </script>
+<!-- jQuery and colorpicker scripts-->
+<script src="public/js/vendor/jquery.js"></script>
+<script src="public/js/vendor/palette-color-picker/palette-color-picker.js"></script>
+
+<!-- client side functions/event handlers -->
+<script src="public/js/client.js"></script>
+
+<!-- Game scripts -->
 <script src="public/js/paddleV0.2.js"></script>
 <script src="public/js/ballV0.1.js"></script>
 <script src="public/js/gameV0.3.1.js"></script>
-<script src="public/js/vendor/jquery.js"></script>
-<script src="public/js/client.js"></script>
-<script src="public/js/vendor/palette-color-picker/palette-color-picker.js"></script>
+
 <script>
+    /**
+     * Function for color picker credits go to: Carlos Cabo ( @putuko )
+     * https://github.com/carloscabo/jquery-palette-color-picker
+     */
     $(document).ready(function () {
         $('[name="colorPicker"]').paletteColorPicker({
             colors: [

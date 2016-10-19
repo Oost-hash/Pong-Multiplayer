@@ -26,14 +26,14 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 //Key down handler
 function keyDownHandler(e) {
-    if (e.keyCode == 83) {
+    if (e.keyCode == 40) {
         if (players.host == true) {
             paddle.upP1 = true;
         } else {
             paddle.upP2 = true;
         }
     }
-    else if (e.keyCode == 87) {
+    else if (e.keyCode == 38) {
 
         if (players.host == true) {
             paddle.downP1 = true;
@@ -45,14 +45,14 @@ function keyDownHandler(e) {
 
 //Key up handler
 function keyUpHandler(e) {
-    if (e.keyCode == 83) {
+    if (e.keyCode == 40) {
         if (players.host == true) {
             paddle.upP1 = false;
         } else {
             paddle.upP2 = false;
         }
     }
-    else if (e.keyCode == 87) {
+    else if (e.keyCode == 38) {
         if (players.host == true) {
             paddle.downP1 = false;
         } else {
