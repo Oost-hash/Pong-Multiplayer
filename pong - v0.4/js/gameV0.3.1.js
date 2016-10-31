@@ -121,6 +121,8 @@ function init() {
             socket.emit('sendBall', {room: players.room, xPos: ball.xPos, yPos: ball.yPos});
         }
     }
+
+    requestAnimationFrame(init);
 }
 
-setInterval(init, 30);
+requestAnimationFrame(init);
